@@ -10,4 +10,13 @@ class User < ApplicationRecord
   validates :last_name_furigana, presence: true
   validates :first_name_furigana, presence: true
   validates :date_of_birth, presence: true
+
+  PASSWORD_REGEX = /\A(?=.*?[a-z])(?=.*?[\d])[a-z\d]+\z/i.freeze
+  validates_format_of :password, with: PASSWORD_REGEX, message: 'is invalid. Include both letters and numbers'
+
+  validates :last_name, format: { with: /\A[ぁ-んァ-ン一-龥々]+\z/, message: 'is invalid. Input full-width characters' }
+  validates :first_name, format: { with: /\A[ぁ-んァ-ン一-龥々]+\z/, message: 'is invalid. Input full-width characters' }
+
+  validates :last_name_furigana, format: { with: /\A[ァ-ヶー－]+\z/, message: 'is invalid. Input full-width katakana characters' }
+  validates :first_name_furigana, format: { with: /\A[ァ-ヶー－]+\z/, message: 'is invalid. Input full-width katakana characters' }
 end
