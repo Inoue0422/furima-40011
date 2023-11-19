@@ -19,4 +19,6 @@ class User < ApplicationRecord
 
   validates :last_name_furigana, format: { with: /\A[ァ-ヶー－]+\z/, message: 'is invalid. Input full-width katakana characters' }
   validates :first_name_furigana, format: { with: /\A[ァ-ヶー－]+\z/, message: 'is invalid. Input full-width katakana characters' }
+
+  has_many :items
 end
