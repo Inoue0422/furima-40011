@@ -37,8 +37,12 @@ class ItemsController < ApplicationController
   end
 
   def destroy
-    @item.destroy
-    redirect_to root_path
+    if user_signed_in? && current_user.id == @item.user.id
+      @item.destroy
+      redirect_to root_path
+    else
+      redirect_to item_path(@item), alert: 'You are not authorized to delete this item.'
+    end
   end
 
   private
