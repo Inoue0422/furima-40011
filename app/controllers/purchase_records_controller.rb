@@ -1,5 +1,6 @@
 class PurchaseRecordsController < ApplicationController
   def index
+    @item = Item.find(params[:item_id])
     @purchase_record_shipping_address = PurchaseRecordShippingAddress.new
   end
 
@@ -9,13 +10,14 @@ class PurchaseRecordsController < ApplicationController
       @purchase_record_shipping_address.save
       redirect_to root_path
     else
-      render :new, status: :unprocessable_entity
+      @item = Item.find(params[:item_id])
+      render :index, status: :unprocessable_entity
     end
   end
 
   private
 
   def purchase_record_shipping_address_params
-    params.require(:purchase_record_shipping_address).permit(:user_id, :item_id, :post_code, :prefectures_id, :municipalities, :street_address, :building_name, :telephone_number)
+    params.require(:purchase_record_shipping_address).permit(:user_id, :item_id, :post_code, :prefectures_id, :municipalities, :street_address, :building_name, :telephone_number).merge(user_id: current_user.id, item_id: params[:item_id])
   end
 end
