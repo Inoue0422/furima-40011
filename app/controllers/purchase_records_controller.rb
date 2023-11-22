@@ -3,19 +3,19 @@ class PurchaseRecordsController < ApplicationController
   before_action :redirect_user, only: [:index]
 
   def index
-    gon.public_key = ENV["PAYJP_PUBLIC_KEY"]
+    gon.public_key = ENV['PAYJP_PUBLIC_KEY']
     @purchase_record_shipping_address = PurchaseRecordShippingAddress.new
   end
 
   def create
     @purchase_record_shipping_address = PurchaseRecordShippingAddress.new(purchase_record_shipping_address_params)
-    
+
     if @purchase_record_shipping_address.valid?
       pay_item
       @purchase_record_shipping_address.save
-      return redirect_to root_path
+      redirect_to root_path
     else
-      gon.public_key = ENV["PAYJP_PUBLIC_KEY"]
+      gon.public_key = ENV['PAYJP_PUBLIC_KEY']
       render :index, status: :unprocessable_entity
     end
   end
@@ -23,16 +23,19 @@ class PurchaseRecordsController < ApplicationController
   private
 
   def purchase_record_shipping_address_params
-    params.require(:purchase_record_shipping_address).permit(:user_id, :item_id, :post_code, :prefectures_id, :municipalities, :street_address, :building_name, :telephone_number).merge(user_id: current_user.id, item_id: params[:item_id], token: params[:token])
+    params.require(:purchase_record_shipping_address)
+          .permit(:user_id, :item_id, :post_code, :prefectures_id, :municipalities, :street_address, :building_name,
+                  :telephone_number)
+          .merge(user_id: current_user.id, item_id: params[:item_id], token: params[:token])
   end
 
   def pay_item
-    Payjp.api_key = ENV["PAYJP_SECRET_KEY"]
-      Payjp::Charge.create(
-        amount: @item.price,
-        card: purchase_record_shipping_address_params[:token],
-        currency: 'jpy'
-      )
+    Payjp.api_key = ENV['PAYJP_SECRET_KEY']
+    Payjp::Charge.create(
+      amount: @item.price,
+      card: purchase_record_shipping_address_params[:token],
+      currency: 'jpy'
+    )
   end
 
   def set_item
@@ -42,5 +45,4 @@ class PurchaseRecordsController < ApplicationController
   def redirect_user
     redirect_to root_path if !user_signed_in? || current_user.id == @item.user_id || @item.purchase_record.present?
   end
-
 end

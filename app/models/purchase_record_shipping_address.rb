@@ -1,6 +1,7 @@
 class PurchaseRecordShippingAddress
   include ActiveModel::Model
-  attr_accessor :user_id, :item_id, :post_code, :prefectures_id, :municipalities, :street_address, :building_name, :telephone_number, :token
+  attr_accessor :user_id, :item_id, :post_code, :prefectures_id, :municipalities, :street_address, :building_name,
+                :telephone_number, :token
 
   validates :post_code, presence: true, format: { with: /\A\d{3}-\d{4}\z/ }
 
@@ -9,24 +10,24 @@ class PurchaseRecordShippingAddress
   validates :municipalities, presence: true
 
   validates :street_address, presence: true
-  
+
   validates :telephone_number, presence: true, format: { with: /\A\d{10,11}\z/ }
 
   validates :token, presence: true
 
   def save
     return false unless valid?
-  
+
     ActiveRecord::Base.transaction do
-      purchase_record = PurchaseRecord.create(user_id: user_id, item_id: item_id)
+      purchase_record = PurchaseRecord.create(user_id:, item_id:)
       ShippingAddress.create(
         purchase_record_id: purchase_record.id,
-        post_code: post_code,
-        prefectures_id: prefectures_id,
-        municipalities: municipalities,
-        street_address: street_address,
-        building_name: building_name,
-        telephone_number: telephone_number
+        post_code:,
+        prefectures_id:,
+        municipalities:,
+        street_address:,
+        building_name:,
+        telephone_number:
       )
     end
     true
