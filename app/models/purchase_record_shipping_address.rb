@@ -1,6 +1,6 @@
 class PurchaseRecordShippingAddress
   include ActiveModel::Model
-  attr_accessor :user_id, :item_id, :post_code, :prefectures_id, :municipalities, :street_address, :building_name, :telephone_number
+  attr_accessor :user_id, :item_id, :post_code, :prefectures_id, :municipalities, :street_address, :building_name, :telephone_number, :token
 
   validates :post_code, presence: true, format: { with: /\A\d{3}-\d{4}\z/ }
 
@@ -11,6 +11,8 @@ class PurchaseRecordShippingAddress
   validates :street_address, presence: true
   
   validates :telephone_number, presence: true, format: { with: /\A\d{10,11}\z/ }
+
+  validates :token, presence: true
 
   def save
     return false unless valid?
