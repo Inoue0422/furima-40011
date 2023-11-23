@@ -3,17 +3,16 @@ class PurchaseRecordShippingAddress
   attr_accessor :user_id, :item_id, :post_code, :prefectures_id, :municipalities, :street_address, :building_name,
                 :telephone_number, :token
 
-  validates :post_code, presence: true, format: { with: /\A\d{3}-\d{4}\z/ }
-
-  validates :prefectures_id, presence: true, numericality: { other_than: 0 } # '---' は id: 0 とします
-
-  validates :municipalities, presence: true
-
-  validates :street_address, presence: true
-
-  validates :telephone_number, presence: true, format: { with: /\A\d{10,11}\z/ }
-
-  validates :token, presence: true
+  with_options presence: true do
+    validates :user_id
+    validates :item_id
+    validates :post_code, format: { with: /\A\d{3}-\d{4}\z/ }
+    validates :prefectures_id, numericality: { other_than: 0 } # '---' は id: 0 とします
+    validates :municipalities
+    validates :street_address
+    validates :telephone_number, format: { with: /\A\d{10,11}\z/ }
+    validates :token
+  end
 
   def save
     return false unless valid?
