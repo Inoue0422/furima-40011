@@ -43,6 +43,11 @@ class PurchaseRecordsController < ApplicationController
   end
 
   def redirect_user
-    redirect_to root_path if !user_signed_in? || current_user.id == @item.user_id || @item.purchase_record.present?
+    unless user_signed_in?
+      redirect_to new_user_session_path
+      return
+    end
+  
+    redirect_to root_path if current_user.id == @item.user_id || @item.purchase_record.present?
   end
 end
